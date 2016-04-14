@@ -12,10 +12,13 @@
  *
  * @package    bit3/git-php
  * @author     Tristan Lins <tristan@lins.io>
+ * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
+ * @author     David Molineus <mail@netzmacht.de>
  * @author     Aaron Rubin <aaron@arkitech.net>
+ * @author     Matthew Gamble <git@matthewgamble.net>
  * @copyright  2014 Tristan Lins <tristan@lins.io>
- * @link       https://github.com/bit3/git-php
  * @license    https://github.com/bit3/git-php/blob/master/LICENSE MIT
+ * @link       https://github.com/bit3/git-php
  * @filesource
  */
 
@@ -24,6 +27,7 @@ namespace Bit3\GitPhp;
 use Bit3\GitPhp\Command\AddCommandBuilder;
 use Bit3\GitPhp\Command\BranchCommandBuilder;
 use Bit3\GitPhp\Command\CheckoutCommandBuilder;
+use Bit3\GitPhp\Command\ConfigCommandBuilder;
 use Bit3\GitPhp\Command\MergeCommandBuilder;
 use Bit3\GitPhp\Command\CloneCommandBuilder;
 use Bit3\GitPhp\Command\CommitCommandBuilder;
@@ -37,12 +41,15 @@ use Bit3\GitPhp\Command\RemoteCommandBuilder;
 use Bit3\GitPhp\Command\ResetCommandBuilder;
 use Bit3\GitPhp\Command\RevParseCommandBuilder;
 use Bit3\GitPhp\Command\RmCommandBuilder;
+use Bit3\GitPhp\Command\ShortLogCommandBuilder;
 use Bit3\GitPhp\Command\ShowCommandBuilder;
 use Bit3\GitPhp\Command\StatusCommandBuilder;
 use Bit3\GitPhp\Command\TagCommandBuilder;
 
 /**
  * GIT repository adapter.
+ *
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class GitRepository
 {
@@ -63,10 +70,11 @@ class GitRepository
     /**
      * Create a new git repository.
      *
-     * @param string    $repositoryPath
-     * @param GitConfig $config
+     * @param string    $repositoryPath The path to the git repository.
+     *
+     * @param GitConfig $config         The configuration to use.
      */
-    function __construct($repositoryPath, GitConfig $config = null)
+    public function __construct($repositoryPath, GitConfig $config = null)
     {
         $this->repositoryPath = (string) $repositoryPath;
         $this->config         = $config ?: new GitConfig();
@@ -120,6 +128,16 @@ class GitRepository
     public function cloneRepository()
     {
         return new CloneCommandBuilder($this);
+    }
+
+    /**
+     * Create a config command.
+     *
+     * @return ConfigCommandBuilder
+     */
+    public function config()
+    {
+        return new ConfigCommandBuilder($this);
     }
 
     /**
@@ -226,6 +244,8 @@ class GitRepository
      * Create rm command.
      *
      * @return RmCommandBuilder
+     *
+     * @SuppressWarnings(PHPMD.ShortMethodName)
      */
     public function rm()
     {
@@ -273,6 +293,16 @@ class GitRepository
     }
 
     /**
+     * Create shortlog command.
+     *
+     * @return ShortLogCommandBuilder
+     */
+    public function shortlog()
+    {
+        return new ShortLogCommandBuilder($this);
+    }
+
+    /**
      * Create ls-remote command.
      *
      * @return LsRemoteCommandBuilder
@@ -281,8 +311,8 @@ class GitRepository
     {
         return new LsRemoteCommandBuilder($this);
     }
-    
-     /**
+
+    /**
      * Create Merge command.
      *
      * @return MergeCommandBuilder
